@@ -32,3 +32,16 @@ test("TC_CONN_001_toutes_les_pages_du_site_fonctionne", async ({ page }) => {
         await expect(page.locator('h1')).toContainText('Divers');
     })
 })
+
+
+test("TC_CONN_002_telechargement_catalogue", async ({ page }) => {
+    await test.step('Étant donné un visiteur peut télécharger le catalogue', async () => {
+        await page.goto('https://fred-troussel.fr/');
+        await expect(page.getByText('— Mobilier Fred Troussel —')).toBeVisible();
+        const popupPromise = page.waitForEvent('popup');
+        await (page.getByText('Voir notre catalogue complet')).click();
+        const popup = await popupPromise;
+        await expect(popup).toHaveURL('/catalogue-2026.pdf')
+    })
+})
+
