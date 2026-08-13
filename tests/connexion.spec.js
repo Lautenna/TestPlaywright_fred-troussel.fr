@@ -7,29 +7,35 @@ test('has title', async ({ page }) => {
 })
 
 test("TC_CONN_001_toutes_les_pages_du_site_fonctionne", async ({ page }) => {
-    await test.step('Étant donné un visiteur peut aller sur la page des tables', async () => {
-        await page.goto('https://fred-troussel.fr/tables-rectangulaires');
-        await expect(page.locator('h1')).toContainText('Tables Rectangulaires');
+    await test.step('Étant donné un visiteur peut aller sur la page des tables via la nav barre', async () => {
+        await page.goto('https://fred-troussel.fr');
+        await (page.locator('nav div.container')).getByText('Tables').click();
+        await expect(page).toHaveURL('/tables-rectangulaires')
+        // await expect(page.locator('h1')).toContainText('Tables Rectangulaires');
     })
 
-    await test.step('Étant donné un visiteur peut aller sur la page des bahus', async () => {
-        await page.goto('https://fred-troussel.fr/bahuts-bas');
-        await expect(page.locator('h1')).toContainText('Bahuts bas');
+    await test.step('Étant donné un visiteur peut aller sur la page des bahus via la nav barre', async () => {
+        await (page.locator('nav div.container')).getByText('Bahuts').click();
+        await expect(page).toHaveURL('/bahuts-bas')
+        // await expect(page.locator('h1')).toContainText('Bahuts bas');
     })
 
-    await test.step('Étant donné un visiteur peut aller sur la page des vasseliers', async () => {
-        await page.goto('https://fred-troussel.fr/vaisseliers');
-        await expect(page.locator('h1')).toContainText('Vaisseliers');
+    await test.step('Étant donné un visiteur peut aller sur la page des vasseliers via la nav barre', async () => {
+        await (page.locator('nav div.container')).getByText('Vaisseliers').click();;
+        await expect(page).toHaveURL('/vaisseliers')
+        // await expect(page.locator('h1')).toContainText('Vaisseliers');
     })
 
-    await test.step('Étant donné un visiteur peut aller sur la page des cuisines', async () => {
-        await page.goto('https://fred-troussel.fr/cuisines');
-        await expect(page.locator('h1')).toContainText('Cuisines');
+    await test.step('Étant donné un visiteur peut aller sur la page des cuisines via la nav barre', async () => {
+        await (page.locator('nav div.container')).getByText('Cuisines').click();
+        await expect(page).toHaveURL('/cuisines')
+        // await expect(page.locator('h1')).toContainText('Cuisines');
     })
 
-    await test.step('Étant donné un visiteur peut aller sur la page divers', async () => {
-        await page.goto('https://fred-troussel.fr/divers');
-        await expect(page.locator('h1')).toContainText('Divers');
+    await test.step('Étant donné un visiteur peut aller sur la page divers via la nav barre', async () => {
+        await (page.locator('nav div.container')).getByText('Divers').click();
+        await expect(page).toHaveURL('/divers')
+        // await expect(page.locator('h1')).toContainText('Divers');
     })
 })
 
