@@ -1,12 +1,11 @@
 import { test, expect } from '@playwright/test'
-import { beforeEach } from 'node:test';
 
 test.beforeEach(async ({ page }) => {
     await page.goto('https://fred-troussel.fr/');
 });
 
 test('has title', async ({ page }) => {
-    //     // await page.goto('https://fred-troussel.fr/');
+    // await page.goto('https://fred-troussel.fr/');
     await expect(page.getByText('— Mobilier Fred Troussel —')).toBeVisible();
 })
 
@@ -66,10 +65,10 @@ for (const { cas, url, titre, } of PageAValider) {
 
 test("TC_CONN_002_telechargement_catalogue", async ({ page }) => {
     await test.step('Étant donné un visiteur peut télécharger le catalogue', async () => {
-        const popupPromise = page.waitForEvent('popup');
+        const downloadPromise = page.waitForEvent('download');
         await (page.getByText('Voir notre catalogue complet')).click();
-        const popup = await popupPromise;
-        await expect(popup).toHaveURL('/catalogue-2026.pdf')
+        const download = await downloadPromise;
+        expect(download.url()).toContain('https://fred-troussel.fr/catalogue-2026.pdf')
     })
 })
 
