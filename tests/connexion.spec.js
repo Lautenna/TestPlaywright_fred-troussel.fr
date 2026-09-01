@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test'
 
+import { MailSlurp } from 'mailslurp-client';
+import { PageAValider } from './data_test/navigation.data.js';
+import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
+import { DemandeDeContact } from './data_test/contact.data.js';
+
 test.beforeEach(async ({ page }) => {
     await page.goto('https://fred-troussel.fr/');
 });
@@ -10,19 +15,11 @@ test('has title', async ({ page }) => {
 })
 
 
-const PageAValider = [
-    { cas: 'Table', url: '/tables-rectangulaires', titre: 'Tables', },
-    { cas: 'Bahut', url: '/bahuts-bas', titre: 'Bahuts', },
-    { cas: 'Vaisseliers', url: '/vaisseliers', titre: 'Vaisseliers', },
-    { cas: 'Cuisines', url: '/cuisines', titre: 'Cuisines' },
-    { cas: 'Divers', url: '/divers', titre: 'Divers', },
 
-]
-
-for (const { cas, url, titre, } of PageAValider) {
-    test(`TC_CONN_001_toutes_les_pages_du_site_fonctionne - ${cas} `, async ({ page }) => {
+for (const { cas, nav, url, titre, } of PageAValider) {
+    test(`TC_CONN_001_toutes_les_pages_du_site_fonctionne ccc- ${cas} `, async ({ page }) => {
         await test.step('Étant donné un visiteur peut aller sur la page des tables via la nav barre', async () => {
-            await (page.locator('nav div.container')).getByText(titre).click();
+            await (page.getByTestId(nav)).click();
             await expect(page).toHaveURL(url)
             await expect(page.locator('h1')).toContainText(titre);
         })
@@ -72,70 +69,79 @@ test("TC_CONN_002_telechargement_catalogue", async ({ page }) => {
     })
 })
 
-let optionAValider = [
-    {
-        cas: 'Table',
-        url: 'https://fred-troussel.fr/tables-rectangulaires',
-        optionClick: ['200cm', "Jusqu' à 110cm Inclus", 'Bords bruts Inclus', '2 rallonges 45cm'],
-        optionVerifier: ['Longueur de plateau 200cm (1 500 €)', "Largeur de plateau Jusqu' à 110cm (inclus)", 'Finitions plateau Bords bruts (inclus)', 'Pieds de table Y (inclus)', 'Suppléments 2 rallonges 45cm (+500 €)', 'Total estimé 2 000 €'],
-    },
-
-    {
-        cas: 'TableSurMesure',
-        url: 'https://fred-troussel.fr/tables-rectangulaires',
-        optionClick: ['200cm', "+ de 110cm Sur mesure", 'Bords bruts Inclus', 'U motif laser +250 €', 'Teinte vintage'],
-        optionVerifier: ['Longueur de plateau 200cm (1 500 €)', "Largeur de plateau + de 110cm (sur mesure)", 'Finitions plateau Bords bruts (inclus)', 'U motif laser (+250 €)', 'Suppléments Teinte vintage (inclus)', 'Total estimé Sur mesure'],
-    },
-
-    {
-        cas: 'bahuts',
-        url: 'https://fred-troussel.fr/bahuts-bas',
-        optionClick: ['150cm 2 000 €', "Panneau coulissant Gratuit", "Panneau à poussoir Gratuit"],
-        optionVerifier: ['Longueur 150cm (2 000 €)', "Configuration Panneau coulissant (inclus)", "Configuration Panneau à poussoir (inclus)", 'Total estimé 2 000 €'],
-    },
-
-    {
-        cas: 'bahutsSurMesure',
-        url: 'https://fred-troussel.fr/bahuts-bas',
-        optionClick: ['150cm 2 000 €', "Panneau coulissant Gratuit", "Avec motif Sur mesure"],
-        optionVerifier: ['Longueur 150cm (2 000 €)', "Configuration Avec motif (sur mesure)", 'Total estimé Sur mesure'],
-    },
-
-
-    {
-        cas: 'vaisseliers',
-        url: 'https://fred-troussel.fr/vaisseliers',
-        optionClick: ['1m50 3 000 €', "Peinture blanche Inclus", "Porte en grille Gratuit"],
-        optionVerifier: ['Longueur 1m50 (3 000 €)', "Couleur de structure Peinture blanche (inclus)", 'Partie inférieure Porte en grille (inclus)', 'Total estimé 3 000 €'],
-    },
-
-    {
-        cas: 'vaisseliersSurMesure',
-        url: 'https://fred-troussel.fr/vaisseliers',
-        optionClick: ['1m50 3 000 €', "Peinture au choix Sur mesure", "Placards suspendus Sur mesure", "Sans tiroirs Sur mesure", "Autre Sur mesure"],
-        optionVerifier: ['Longueur 1m50 (3 000 €)', "Couleur de structure Peinture au choix (sur mesure)", "Partie supérieure Placards suspendus (sur mesure)", "Tiroirs Sans tiroirs (sur mesure)", 'Partie inférieure Autre (sur mesure)', 'Total estimé Sur mesure',],
-    },
-
-]
 
 
 test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles - ${cas}", async ({ page }) => {
-    for (const i of optionAValider) {
-        await page.goto(i.url);
+    await test.step('Étant donné un visiteur peut choisir ces options standard et sur mesure', async () => {
+        for (const i of optionAValider) {
+            await page.goto(i.url);
 
-        for (const j of i.optionClick) {
-            await (page.getByText(j)).click();
+            for (const j of i.optionClick) {
+                await (page.getByText(j)).click();
+            }
+
+            await (page.getByRole('button', { name: 'Suivant' })).click();
+
+            for (const j of i.optionVerifier) {
+                await expect(page.locator('#product-recap-container')).toContainText(j);
+            }
+
         }
-
-        await (page.getByRole('button', { name: 'Suivant' })).click();
-
-        for (const j of i.optionVerifier) {
-            await expect(page.locator('#product-recap-container')).toContainText(j);
-        }
-    }
+    })
 })
 
 
+test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options - ${cas}", async ({ page }) => {
+    const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
+
+    await test.step('Étant donné un visiteur peut choisir ces options', async () => {
+        for (const i of optionAValiderStandard) {
+            await page.goto(i.url);
+
+            for (const j of i.optionClick) {
+                await (page.getByText(j)).click();
+            }
+
+            await (page.getByRole('button', { name: 'Suivant' })).click();
+
+            for (const j of i.optionVerifier) {
+                await expect(page.locator('#product-recap-container')).toContainText(j);
+            }
+
+            await test.step('Étant donné un visiteur peut faire un demande de contact', async () => {
+                const inbox = await ms.getInbox('2e3dfe89-6ed7-4f6f-8dc0-0b18872055f3');
+
+                await (page.locator('#contact_nom')).fill(DemandeDeContact.nom)
+                await (page.locator('#contact_email')).fill(DemandeDeContact.email)
+                await (page.locator('#contact_telephone')).fill(DemandeDeContact.telephone)
+                await (page.locator('#contact_message')).fill(DemandeDeContact.message)
+                await (page.getByRole('button', { name: 'Envoyer ma demande' })).click();
+
+                const emailRecu = await ms.waitForLatestEmail(inbox.id, 30_000, true);
+                for (const nomOptionVerifier of i.optionVerifier) {
+                    expect(emailRecu.body).toContain(nomOptionVerifier)
+                }
+
+            })
+        }
+    })
+})
+
+
+test('TC_CONT_001_reception_du_mail_de_contact', async ({ page }) => {
+    const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
+    const inbox = await ms.getInbox('2e3dfe89-6ed7-4f6f-8dc0-0b18872055f3');
+
+    await page.goto('https://fred-troussel.fr/');
+    await (page.locator('#contact_nom')).fill(DemandeDeContact.nom)
+    await (page.locator('#contact_email')).fill(DemandeDeContact.email)
+    await (page.locator('#contact_telephone')).fill(DemandeDeContact.telephone)
+    await (page.locator('#contact_message')).fill(DemandeDeContact.message)
+    await (page.getByRole('button', { name: 'Envoyer ma demande' })).click();
+
+    const emailRecu = await ms.waitForLatestEmail(inbox.id, 30_000, true);
+    expect(emailRecu).toBeDefined()
+});
 
 
 // test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles", async ({ page }) => {

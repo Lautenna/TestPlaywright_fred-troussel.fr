@@ -18,6 +18,10 @@
   "homepage": "https://github.com/Lautenna/fred_troussel_tests#readme",
   "devDependencies": {
     "@playwright/test": "^1.62.1",
-    "@types/node": "^26.2.0"
+    "@types/node": "^26.2.0",
+    "mailslurp-client": "^17.4.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2"
   }
 }
