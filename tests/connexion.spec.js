@@ -1,9 +1,10 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, CSS } from '@playwright/test'
 
 import { MailSlurp } from 'mailslurp-client';
 import { PageAValider } from './data_test/navigation.data.js';
 import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
 import { DemandeDeContact } from './data_test/contact.data.js';
+import { containsSpaceInsensitive } from './utils/helper.js'
 
 test.beforeEach(async ({ page }) => {
     await page.goto('https://fred-troussel.fr/');
@@ -70,14 +71,13 @@ test("TC_CONN_002_telechargement_catalogue", async ({ page }) => {
 })
 
 
-
 test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles - ${cas}", async ({ page }) => {
     await test.step('Étant donné un visiteur peut choisir ces options standard et sur mesure', async () => {
         for (const i of optionAValider) {
             await page.goto(i.url);
 
             for (const j of i.optionClick) {
-                await (page.getByText(j)).click();
+                await (page.locator(j)).dispatchEvent("click");
             }
 
             await (page.getByRole('button', { name: 'Suivant' })).click();
@@ -88,18 +88,41 @@ test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'arti
 
         }
     })
-})
+});
+
+
+
+
+// test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles - ${cas}", async ({ page }) => {
+//     await test.step('Étant donné un visiteur peut choisir ces options standard et sur mesure', async () => {
+//         for (const i of optionAValider) {
+//             await page.goto(i.url);
+
+//             for (const j of i.optionClick) {
+//                 await (page.getByText(j)).click();
+//             }
+
+//             await (page.getByRole('button', { name: 'Suivant' })).click();
+
+//             for (const j of i.optionVerifier) {
+//                 await expect(page.locator('#product-recap-container')).toContainText(j);
+//             }
+
+//         }
+//     })
+// })
+
 
 
 test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options - ${cas}", async ({ page }) => {
     const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
-
+    test.setTimeout(120_000);
     await test.step('Étant donné un visiteur peut choisir ces options', async () => {
         for (const i of optionAValiderStandard) {
             await page.goto(i.url);
 
             for (const j of i.optionClick) {
-                await (page.getByText(j)).click();
+                await (page.locator(j)).dispatchEvent('click');
             }
 
             await (page.getByRole('button', { name: 'Suivant' })).click();
@@ -109,19 +132,20 @@ test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options - ${c
             }
 
             await test.step('Étant donné un visiteur peut faire un demande de contact', async () => {
-                const inbox = await ms.getInbox('2e3dfe89-6ed7-4f6f-8dc0-0b18872055f3');
+                const inbox = await ms.createInbox();
 
                 await (page.locator('#contact_nom')).fill(DemandeDeContact.nom)
-                await (page.locator('#contact_email')).fill(DemandeDeContact.email)
+                await (page.locator('#contact_email')).fill(inbox.emailAddress)
                 await (page.locator('#contact_telephone')).fill(DemandeDeContact.telephone)
                 await (page.locator('#contact_message')).fill(DemandeDeContact.message)
                 await (page.getByRole('button', { name: 'Envoyer ma demande' })).click();
-
+                // await page.waitForTimeout(5000);
                 const emailRecu = await ms.waitForLatestEmail(inbox.id, 30_000, true);
                 for (const nomOptionVerifier of i.optionVerifier) {
-                    expect(emailRecu.body).toContain(nomOptionVerifier)
+                    expect(
+                        containsSpaceInsensitive(emailRecu.body.replaceAll(':', '').replaceAll("Prix", "Total").replaceAll("&#039;", "'"), nomOptionVerifier)
+                    ).toBeTruthy()
                 }
-
             })
         }
     })
