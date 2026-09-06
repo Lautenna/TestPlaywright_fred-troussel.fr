@@ -91,8 +91,6 @@ test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'arti
 });
 
 
-
-
 // test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles - ${cas}", async ({ page }) => {
 //     await test.step('Étant donné un visiteur peut choisir ces options standard et sur mesure', async () => {
 //         for (const i of optionAValider) {
