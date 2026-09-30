@@ -5,6 +5,10 @@ import { PageAValider } from './data_test/navigation.data.js';
 import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
 import { containsSpaceInsensitive } from './utils/helper.js'
 import { ContactForm } from '../pages/components/ContactForm.js'
+import { ReseauSocial } from '../pages/components/ReseauSociaux.js'
+import { Cookies } from '../pages/components/Cookies.js'
+import { beforeEach } from 'node:test';
+
 
 
 
@@ -146,3 +150,57 @@ test('TC_CONT_001_reception_du_mail_de_contact', async ({ page }) => {
 //     expect(emailRecu).toBeDefined()
 // });
 
+
+
+test('TC_RESEAU_001_renvoi_sur_le_resau_social_quand_on_click', async ({ page }) => {
+
+    const myReseauSocial = new ReseauSocial(page);
+    await test.step('Étant donné un visiteur peut cliquer sur le logo Facebook en bas de page', async () => {
+        await page.goto('https://fred-troussel.fr/');
+        const facebookPage = await myReseauSocial.redirectionFacebook()
+        await expect(facebookPage).toHaveURL("https://www.facebook.com/mobilierfredtroussel")
+
+    })
+
+    await test.step('Étant donné un visiteur peut cliquer sur le logo instagram en bas de page', async () => {
+        await page.goto('https://fred-troussel.fr/');
+        const instagramPage = await myReseauSocial.redirectionInstagram()
+        await expect(instagramPage).toHaveURL("https://www.instagram.com/fredtroussel")
+
+    })
+
+    await test.step('Étant donné un visiteur peut cliquer sur le logo site du developpeur en bas de page', async () => {
+        await page.goto('https://fred-troussel.fr/');
+        myReseauSocial.redirectionSiteDeveloppeur()
+        await expect(page).toHaveURL("https://maximemougel.dev/")
+
+    })
+
+})
+
+test.describe('Cookies', () => {
+    let cookiesVisible;
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto('https://fred-troussel.fr/')
+        cookiesVisible = new Cookies(page)
+    });
+
+    test('TC_COOK_001_PopUp_Cookie_Lors_De_La_Connextion_Au_Site', async ({ page }) => {
+        await expect(cookiesVisible.popup).toBeVisible()
+    })
+
+    test('TC_COOK_002_PopUp_Cookie_Disparait_Quand_On_Refresh', async ({ page }) => {
+        cookiesVisible.accepterCookies()
+        await expect(cookiesVisible.popup).not.toBeVisible()
+        await page.reload();
+        await expect(cookiesVisible.popup).not.toBeVisible()
+    })
+
+    test('TC_COOK_003_PopUp_Cookie_Apparait_Gestion_Cookies', async ({ page }) => {
+        cookiesVisible.accepterCookies()
+        await expect(cookiesVisible.popup).not.toBeVisible()
+        await cookiesVisible.gererCookies()
+        await expect(cookiesVisible.popup).toBeVisible()
+    })
+})
