@@ -10,10 +10,12 @@ import { Cookies } from '../pages/components/Cookies.js'
 import { beforeEach } from 'node:test';
 
 
-
+test.describe('Fonctionnement des pages', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.goto('https://fred-troussel.fr/')
+    });
 
 test('has title', async ({ page }) => {
-    await page.goto('https://fred-troussel.fr/');
     await expect(page.getByText('— Mobilier Fred Troussel —')).toBeVisible();
 })
 
@@ -21,7 +23,6 @@ test('has title', async ({ page }) => {
 for (const { cas, nav, url, titre, } of PageAValider) {
     test(`TC_CONN_001_toutes_les_pages_du_site_fonctionne ccc- ${cas} `, async ({ page }) => {
         await test.step('Étant donné un visiteur peut aller sur la page des tables via la nav barre', async () => {
-            await page.goto('https://fred-troussel.fr/');
             await (page.getByTestId(nav)).click();
             await expect(page).toHaveURL(url)
             await expect(page.locator('h1')).toContainText(titre);
@@ -42,6 +43,7 @@ test("TC_CONN_002_telechargement_catalogue", async ({ page }) => {
     })
 })
 
+})
 
 test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles - ${cas}", async ({ page }) => {
     await test.step('Étant donné un visiteur peut choisir ces options standard et sur mesure', async () => {
