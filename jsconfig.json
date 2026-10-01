@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "target": "es2022",
+    "checkJs": false,
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "tests",
+    "pages",
+    "*.js"
+  ],
+  "exclude": [
+    "playwright-report",
+    "test-results"
+  ]
+}
