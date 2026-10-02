@@ -1,8 +1,9 @@
 import { test, expect, CSS } from '@playwright/test'
-import { InlineObject3FromJSON, MailSlurp } from 'mailslurp-client';
+import { InlineObject3FromJSON, MailSlurp, MatchOptionFieldEnum, MatchOptionShouldEnum } from 'mailslurp-client';
 import { containsSpaceInsensitive } from './utils/helper.js'
 import { ContactForm } from '../pages/components/ContactForm.js'
 import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
+import { DemandeDeContact } from './data_test/contact.data.js';
 
 test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options", async ({ page }) => {
     const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
@@ -22,13 +23,25 @@ test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options", asy
             }
 
             await test.step('Étant donné un visiteur peut faire un demande de contact', async () => {
-                const inbox = await ms.createInbox();
+                const inbox = await ms.getInbox(DemandeDeContact.email.split('@')[0]);
 
                 const myContactForm = new ContactForm(page)
-                myContactForm.remplirChamps();
-                myContactForm.sendForm()
+                await myContactForm.remplirChamps();
+                await myContactForm.sendForm()
 
-                const emailRecu = await ms.waitForLatestEmail(inbox.id, 30_000, true);
+                const infoEmailAttendu = {
+                    matches: [
+                        {
+                            field: MatchOptionFieldEnum.SUBJECT,
+                            should: MatchOptionShouldEnum.CONTAIN,
+                            value: 'Nouvelle demande de contact',
+                        },
+                    ],
+                }
+
+                const previewEmailRecu = (await ms.waitForMatchingEmails(infoEmailAttendu, 1, inbox.id, 30_000, true))[0];
+                const emailRecu = await ms.getEmail(previewEmailRecu.id)
+                await ms.emailController.markAllAsRead({ inboxId: inbox.id, read: true })
                 for (const nomOptionVerifier of i.optionVerifier) {
                     expect(
                         containsSpaceInsensitive(emailRecu.body.replaceAll(':', '').replaceAll("Prix", "Total").replaceAll("&#039;", "'"), nomOptionVerifier)
@@ -42,11 +55,12 @@ test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options", asy
 
 test('TC_CONT_001_Reception_du_mail_de_contact', async ({ page }) => {
     const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
-    const inbox = await ms.getInbox('2e3dfe89-6ed7-4f6f-8dc0-0b18872055f3');
+    const inbox = await ms.getInbox(DemandeDeContact.email.split('@')[0]);
 
     const myContactForm = new ContactForm(page)
-    myContactForm.remplirChamps();
-    myContactForm.sendForm()
+    await page.goto('https://fred-troussel.fr/');
+    await myContactForm.remplirChamps();
+    await myContactForm.sendForm()
 
 
     const emailRecu = await ms.waitForLatestEmail(inbox.id, 30_000, true);

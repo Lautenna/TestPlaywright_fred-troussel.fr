@@ -20,7 +20,6 @@ export class CookiesPopup {
         await this.bouttonCookies.click()
     }
     async recupererCookiesLocalStorage() {
-        return await this.page.localStorage.getItem('cookie_consent');
-
+        return this.page.localStorage.getItem('cookie_consent');
     }
 }

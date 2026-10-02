@@ -4,3 +4,4 @@ export const DemandeDeContact = {
     telephone: '06 06 06 06 06',
     message: 'Je suis interessée par un projet de table',
 }
+

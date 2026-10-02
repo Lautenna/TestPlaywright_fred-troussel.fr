@@ -1,8 +1,7 @@
 import { test, expect, CSS } from '@playwright/test'
 import { PageAValider } from './data_test/navigation.data.js';
-import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
+import { optionAValider} from './data_test/configurateur.data.js';
 import { ReseauSocial } from '../pages/components/ReseauSociaux.js'
-import { beforeEach } from 'node:test';
 
 
 test.describe('Fonctionnement des pages', () => {
@@ -98,7 +97,7 @@ test('TC_RESEAU_001_Redirection_vers_les_reseaux_sociaux_au_clic', async ({ page
 
     await test.step('Étant donné un visiteur peut cliquer sur le logo site du developpeur en bas de page', async () => {
         await page.goto('https://fred-troussel.fr/');
-        myReseauSocial.redirectionSiteDeveloppeur()
+        await myReseauSocial.redirectionSiteDeveloppeur()
         await expect(page).toHaveURL("https://maximemougel.dev/")
 
     })
