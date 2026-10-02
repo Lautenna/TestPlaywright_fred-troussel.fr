@@ -7,6 +7,16 @@ Elle vérifie les parcours clés d'un visiteur : navigation, configurateur de pr
 
 > ⚠️ Les tests s'exécutent contre le site **réellement déployé** : il n'y a ni serveur local, ni build.
 
+## De Jira à Squash
+
+Les besoins de test sont transmis par le développeur du site via **Jira**. Les tâches sont claires et bien définies.
+
+Pour planifier les tests précisément, chaque tâche est ensuite décomposée en sous-tâches dans **Squash** (outil de gestion de cas de test). Chaque cas de test de ce dépôt (`TC_CONN`, `TC_CONF`, etc.) correspond à un cas défini dans Squash.
+
+La capture ci-dessous montre le travail réalisé dans Squash (instance locale).
+
+<img width="2560" height="1600" alt="Capture d'écran de Squash : cas de test et sous-tâches planifiées pour le site fred-troussel.fr" src="https://github.com/user-attachments/assets/6b55399e-a076-4331-9b2b-cf65b8af0308" />
+
 ## Ce qui est testé
 
 | Zone | Préfixe | Ce qui est vérifié |

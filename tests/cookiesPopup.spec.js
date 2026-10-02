@@ -1,5 +1,5 @@
 import { test, expect, CSS } from '@playwright/test'
-import { CookiesPopup } from '../pages/components/CookiePopup.js';
+import { CookiesPopup } from '../pages/components/CookiesPopup.js';
 import { beforeEach } from 'node:test';
 
 test.describe('CookiesPopup', () => {
@@ -10,18 +10,18 @@ test.describe('CookiesPopup', () => {
         cookiesVisible = new CookiesPopup(page)
     });
 
-    test('TC_COOK_001_PopUp_Cookie_Lors_De_La_Connextion_Au_Site', async ({ page }) => {
+    test('TC_COOK_001_PopUp_Cookies_Lors_De_La_Connextion_Au_Site', async ({ page }) => {
         await expect(cookiesVisible.popup).toBeVisible()
     })
 
-    test('TC_COOK_002_PopUp_Cookie_Disparait_Quand_On_Refresh', async ({ page }) => {
+    test('TC_COOK_002_PopUp_Cookies_Disparait_Quand_On_Refresh', async ({ page }) => {
         cookiesVisible.accepterCookies()
         await expect(cookiesVisible.popup).not.toBeVisible()
         await page.reload();
         await expect(cookiesVisible.popup).not.toBeVisible()
     })
 
-    test('TC_COOK_003_PopUp_Cookie_Apparait_Gestion_Cookies', async ({ page }) => {
+    test('TC_COOK_003_PopUp_Cookies_Apparait_Gestion_Cookies', async ({ page }) => {
         cookiesVisible.accepterCookies()
         await expect(cookiesVisible.popup).not.toBeVisible()
         await cookiesVisible.gererCookies()
