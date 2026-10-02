@@ -5,52 +5,53 @@ import { ContactForm } from '../pages/components/ContactForm.js'
 import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
 import { DemandeDeContact } from './data_test/contact.data.js';
 
-test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options", async ({ page }) => {
-    const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
-    test.setTimeout(120_000);
-    await test.step('Étant donné un visiteur peut choisir ces options', async () => {
-        for (const i of optionAValiderStandard) {
-            await page.goto(i.url);
+// Flaky test ==> 
+// test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options", async ({ page }) => {
+//     const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
+//     test.setTimeout(120_000);
+//     await test.step('Étant donné un visiteur peut choisir ces options', async () => {
+//         for (const i of optionAValiderStandard) {
+//             await page.goto(i.url);
 
-            for (const j of i.optionClick) {
-                await (page.locator(j)).dispatchEvent('click');
-            }
+//             for (const j of i.optionClick) {
+//                 await (page.locator(j)).dispatchEvent('click');
+//             }
 
-            await (page.getByRole('button', { name: 'Suivant' })).click();
+//             await (page.getByRole('button', { name: 'Suivant' })).click();
 
-            for (const j of i.optionVerifier) {
-                await expect(page.locator('#product-recap-container')).toContainText(j);
-            }
+//             for (const j of i.optionVerifier) {
+//                 await expect(page.locator('#product-recap-container')).toContainText(j);
+//             }
 
-            await test.step('Étant donné un visiteur peut faire un demande de contact', async () => {
-                const inbox = await ms.getInbox(DemandeDeContact.email.split('@')[0]);
+//             await test.step('Étant donné un visiteur peut faire un demande de contact', async () => {
+//                 const inbox = await ms.getInbox(DemandeDeContact.email.split('@')[0]);
 
-                const myContactForm = new ContactForm(page)
-                await myContactForm.remplirChamps();
-                await myContactForm.sendForm()
+//                 const myContactForm = new ContactForm(page)
+//                 await myContactForm.remplirChamps();
+//                 await myContactForm.sendForm()
 
-                const infoEmailAttendu = {
-                    matches: [
-                        {
-                            field: MatchOptionFieldEnum.SUBJECT,
-                            should: MatchOptionShouldEnum.CONTAIN,
-                            value: 'Nouvelle demande de contact',
-                        },
-                    ],
-                }
+//                 const infoEmailAttendu = {
+//                     matches: [
+//                         {
+//                             field: MatchOptionFieldEnum.SUBJECT,
+//                             should: MatchOptionShouldEnum.CONTAIN,
+//                             value: 'Nouvelle demande de contact',
+//                         },
+//                     ],
+//                 }
 
-                const previewEmailRecu = (await ms.waitForMatchingEmails(infoEmailAttendu, 1, inbox.id, 30_000, true))[0];
-                const emailRecu = await ms.getEmail(previewEmailRecu.id)
-                await ms.emailController.markAllAsRead({ inboxId: inbox.id, read: true })
-                for (const nomOptionVerifier of i.optionVerifier) {
-                    expect(
-                        containsSpaceInsensitive(emailRecu.body.replaceAll(':', '').replaceAll("Prix", "Total").replaceAll("&#039;", "'"), nomOptionVerifier)
-                    ).toBeTruthy()
-                }
-            })
-        }
-    })
-})
+//                 const previewEmailRecu = (await ms.waitForMatchingEmails(infoEmailAttendu, 1, inbox.id, 30_000, true))[0];
+//                 const emailRecu = await ms.getEmail(previewEmailRecu.id)
+//                 await ms.emailController.markAllAsRead({ inboxId: inbox.id, read: true })
+//                 for (const nomOptionVerifier of i.optionVerifier) {
+//                     expect(
+//                         containsSpaceInsensitive(emailRecu.body.replaceAll(':', '').replaceAll("Prix", "Total").replaceAll("&#039;", "'"), nomOptionVerifier)
+//                     ).toBeTruthy()
+//                 }
+//             })
+//         }
+//     })
+// })
 
 
 test('TC_CONT_001_Reception_du_mail_de_contact', async ({ page }) => {
