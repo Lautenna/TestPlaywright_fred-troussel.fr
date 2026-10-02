@@ -16,7 +16,7 @@ test.describe('Fonctionnement des pages', () => {
 
 
     for (const { cas, nav, url, titre, } of PageAValider) {
-        test(`TC_CONN_001_toutes_les_pages_du_site_fonctionne ${cas} `, async ({ page }) => {
+        test(`TC_CONN_001_Toutes_les_pages_du_site_fonctionnent ${cas}`, async ({ page }) => {
             await test.step('Étant donné un visiteur peut aller sur la page des tables via la nav barre', async () => {
                 await (page.getByTestId(nav)).click();
                 await expect(page).toHaveURL(url)
@@ -26,7 +26,7 @@ test.describe('Fonctionnement des pages', () => {
     }
 
 
-    test("TC_CONN_002_telechargement_catalogue", async ({ page }) => {
+    test("TC_CONN_002_Telechargement_du_catalogue", async ({ page }) => {
         await test.step('Étant donné un visiteur peut télécharger le catalogue', async () => {
             await page.goto('https://fred-troussel.fr/');
             const downloadPromise = page.waitForEvent('download');
@@ -38,7 +38,7 @@ test.describe('Fonctionnement des pages', () => {
 
 })
 
-test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'articles - ${cas}", async ({ page }) => {
+test("TC_CONF_001_Les_options_ajustent_le_prix_pour_chaque_categorie_d_article", async ({ page }) => {
     await test.step('Étant donné un visiteur peut choisir ces options standard et sur mesure', async () => {
         for (const i of optionAValider) {
             await page.goto(i.url);
@@ -79,7 +79,7 @@ test("TC_CONF_001_Table_Les_options_ajuste_le_prix_pour_chaque_categories_d'arti
 
 
 
-test('TC_RESEAU_001_renvoi_sur_le_resau_social_quand_on_click', async ({ page }) => {
+test('TC_RESEAU_001_Redirection_vers_les_reseaux_sociaux_au_clic', async ({ page }) => {
 
     const myReseauSocial = new ReseauSocial(page);
     await test.step('Étant donné un visiteur peut cliquer sur le logo Facebook en bas de page', async () => {

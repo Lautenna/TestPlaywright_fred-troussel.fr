@@ -4,7 +4,7 @@ import { containsSpaceInsensitive } from './utils/helper.js'
 import { ContactForm } from '../pages/components/ContactForm.js'
 import { optionAValider, optionAValiderStandard } from './data_test/configurateur.data.js';
 
-test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options - ${cas}", async ({ page }) => {
+test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options", async ({ page }) => {
     const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
     test.setTimeout(120_000);
     await test.step('Étant donné un visiteur peut choisir ces options', async () => {
@@ -40,7 +40,7 @@ test("TC_CONT_002_Choix_des_options_et_demande_de_contact_avec_ces_options - ${c
 })
 
 
-test('TC_CONT_001_reception_du_mail_de_contact', async ({ page }) => {
+test('TC_CONT_001_Reception_du_mail_de_contact', async ({ page }) => {
     const ms = new MailSlurp({ apiKey: process.env.MAILSLURP_API_KEY });
     const inbox = await ms.getInbox('2e3dfe89-6ed7-4f6f-8dc0-0b18872055f3');
 
