@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       MAILSLURP_API_KEY: ${{ secrets.MAILSLURP_API_KEY }}
+      SITE_BASIC_USER: ${{ secrets.SITE_BASIC_USER }}
+      SITE_BASIC_PASSWORD: ${{ secrets.SITE_BASIC_PASSWORD }}
     steps:
     - uses: actions/checkout@v4
     - name: Check MailSlurp configuration
