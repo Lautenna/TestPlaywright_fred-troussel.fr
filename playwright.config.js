@@ -35,8 +35,8 @@ export default defineConfig({
     trace: 'on-first-retry',
     
     httpCredentials: {
-      username: process.env.SITE_BASIC_USER!,
-      password: process.env.SITE_BASIC_PASSWORD!,
+      username: process.env.SITE_BASIC_USER,
+      password: process.env.SITE_BASIC_PASSWORD,
       origin: 'https://fred-troussel.fr',
     },
   },
