@@ -39,6 +39,9 @@ export default defineConfig({
       password: process.env.SITE_BASIC_PASSWORD,
       origin: 'https://fred-troussel.fr',
     },
+    extraHTTPHeaders: {
+      'X-E2E-Key': process.env.E2E_KEY,
+    },
   },
 
   /* Configure projects for major browsers */
