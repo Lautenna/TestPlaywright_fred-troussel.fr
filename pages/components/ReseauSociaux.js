@@ -15,13 +15,13 @@ export class ReseauSocial {
           return newPage;
     }
 
-    async redirectionInstagram() {
-        const pagePromise = this.page.context().waitForEvent('page');
-        await this.bouttonInstagram.click()
-        const newPage = await pagePromise;
-          await newPage.waitForLoadState();
-        return newPage;
-        }
+    // async redirectionInstagram() {
+    //     const pagePromise = this.page.context().waitForEvent('page');
+    //     await this.bouttonInstagram.click()
+    //     const newPage = await pagePromise;
+    //       await newPage.waitForLoadState();
+    //     return newPage;
+    //     }
 
     async redirectionSiteDeveloppeur() {
         await this.bouttonSiteDeveloppeur.click()
