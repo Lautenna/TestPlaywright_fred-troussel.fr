@@ -15,7 +15,7 @@ Pour planifier les tests précisément, chaque tâche est ensuite décomposée e
 
 La capture ci-dessous montre le travail réalisé dans Squash (instance locale).
 
-<img width="2560" height="1600" alt="Capture d'écran de Squash : cas de test et sous-tâches planifiées pour le site fred-troussel.fr" src="https://github.com/user-attachments/assets/3ba9c045-56cb-4c3b-a947-61b8ca9afe03" />
+<img width="2560" height="1600" alt="Capture d'écran de Squash : cas de test et sous-tâches planifiées pour le site fred-troussel.fr" src="https://github.com/user-attachments/assets/ba5fedbc-0a83-4908-b906-0f9bcf713754" />
 
 
 ## Ce qui est testé
